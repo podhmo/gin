@@ -17,7 +17,6 @@ const (
 	MIMEPlain             = "text/plain"
 	MIMEPOSTForm          = "application/x-www-form-urlencoded"
 	MIMEMultipartPOSTForm = "multipart/form-data"
-	MIMEPROTOBUF          = "application/x-protobuf"
 	MIMEYAML              = "application/x-yaml"
 	MIMEYAML2             = "application/yaml"
 	MIMETOML              = "application/toml"
@@ -76,7 +75,6 @@ var (
 	Query         = queryBinding{}
 	FormPost      = formPostBinding{}
 	FormMultipart = formMultipartBinding{}
-	ProtoBuf      = protobufBinding{}
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
 	Header        = headerBinding{}
