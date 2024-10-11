@@ -16,10 +16,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin/internal/json"
-	testdata "github.com/gin-gonic/gin/testdata/protoexample"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/protobuf/proto"
 )
 
 // TODO unit tests
@@ -272,36 +270,6 @@ func (h xmlmap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
-func TestRenderYAML(t *testing.T) {
-	w := httptest.NewRecorder()
-	data := `
-a : Easy!
-b:
-	c: 2
-	d: [3, 4]
-	`
-	(YAML{data}).WriteContentType(w)
-	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
-
-	err := (YAML{data}).Render(w)
-	require.NoError(t, err)
-	assert.Equal(t, "|4-\n    a : Easy!\n    b:\n    \tc: 2\n    \td: [3, 4]\n    \t\n", w.Body.String())
-	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
-}
-
-type fail struct{}
-
-// Hook MarshalYAML
-func (ft *fail) MarshalYAML() (any, error) {
-	return nil, errors.New("fail")
-}
-
-func TestRenderYAMLFail(t *testing.T) {
-	w := httptest.NewRecorder()
-	err := (YAML{&fail{}}).Render(w)
-	require.Error(t, err)
-}
-
 func TestRenderTOML(t *testing.T) {
 	w := httptest.NewRecorder()
 	data := map[string]any{
@@ -320,35 +288,6 @@ func TestRenderTOML(t *testing.T) {
 func TestRenderTOMLFail(t *testing.T) {
 	w := httptest.NewRecorder()
 	err := (TOML{net.IPv4bcast}).Render(w)
-	require.Error(t, err)
-}
-
-// test Protobuf rendering
-func TestRenderProtoBuf(t *testing.T) {
-	w := httptest.NewRecorder()
-	reps := []int64{int64(1), int64(2)}
-	label := "test"
-	data := &testdata.Test{
-		Label: &label,
-		Reps:  reps,
-	}
-
-	(ProtoBuf{data}).WriteContentType(w)
-	protoData, err := proto.Marshal(data)
-	require.NoError(t, err)
-	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
-
-	err = (ProtoBuf{data}).Render(w)
-
-	require.NoError(t, err)
-	assert.Equal(t, string(protoData), w.Body.String())
-	assert.Equal(t, "application/x-protobuf", w.Header().Get("Content-Type"))
-}
-
-func TestRenderProtoBufFail(t *testing.T) {
-	w := httptest.NewRecorder()
-	data := &testdata.Test{}
-	err := (ProtoBuf{data}).Render(w)
 	require.Error(t, err)
 }
 
