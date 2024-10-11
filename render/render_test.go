@@ -270,36 +270,6 @@ func (h xmlmap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
-func TestRenderYAML(t *testing.T) {
-	w := httptest.NewRecorder()
-	data := `
-a : Easy!
-b:
-	c: 2
-	d: [3, 4]
-	`
-	(YAML{data}).WriteContentType(w)
-	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
-
-	err := (YAML{data}).Render(w)
-	require.NoError(t, err)
-	assert.Equal(t, "|4-\n    a : Easy!\n    b:\n    \tc: 2\n    \td: [3, 4]\n    \t\n", w.Body.String())
-	assert.Equal(t, "application/yaml; charset=utf-8", w.Header().Get("Content-Type"))
-}
-
-type fail struct{}
-
-// Hook MarshalYAML
-func (ft *fail) MarshalYAML() (any, error) {
-	return nil, errors.New("fail")
-}
-
-func TestRenderYAMLFail(t *testing.T) {
-	w := httptest.NewRecorder()
-	err := (YAML{&fail{}}).Render(w)
-	require.Error(t, err)
-}
-
 func TestRenderTOML(t *testing.T) {
 	w := httptest.NewRecorder()
 	data := map[string]any{

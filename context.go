@@ -33,8 +33,6 @@ const (
 	MIMEPlain             = binding.MIMEPlain
 	MIMEPOSTForm          = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
-	MIMEYAML              = binding.MIMEYAML
-	MIMEYAML2             = binding.MIMEYAML2
 	MIMETOML              = binding.MIMETOML
 )
 
@@ -804,11 +802,6 @@ func (c *Context) BindQuery(obj any) error {
 	return c.MustBindWith(obj, binding.Query)
 }
 
-// BindYAML is a shortcut for c.MustBindWith(obj, binding.YAML).
-func (c *Context) BindYAML(obj any) error {
-	return c.MustBindWith(obj, binding.YAML)
-}
-
 // BindTOML is a shortcut for c.MustBindWith(obj, binding.TOML).
 func (c *Context) BindTOML(obj any) error {
 	return c.MustBindWith(obj, binding.TOML)
@@ -874,11 +867,6 @@ func (c *Context) ShouldBindQuery(obj any) error {
 	return c.ShouldBindWith(obj, binding.Query)
 }
 
-// ShouldBindYAML is a shortcut for c.ShouldBindWith(obj, binding.YAML).
-func (c *Context) ShouldBindYAML(obj any) error {
-	return c.ShouldBindWith(obj, binding.YAML)
-}
-
 // ShouldBindTOML is a shortcut for c.ShouldBindWith(obj, binding.TOML).
 func (c *Context) ShouldBindTOML(obj any) error {
 	return c.ShouldBindWith(obj, binding.TOML)
@@ -939,11 +927,6 @@ func (c *Context) ShouldBindBodyWithJSON(obj any) error {
 // ShouldBindBodyWithXML is a shortcut for c.ShouldBindBodyWith(obj, binding.XML).
 func (c *Context) ShouldBindBodyWithXML(obj any) error {
 	return c.ShouldBindBodyWith(obj, binding.XML)
-}
-
-// ShouldBindBodyWithYAML is a shortcut for c.ShouldBindBodyWith(obj, binding.YAML).
-func (c *Context) ShouldBindBodyWithYAML(obj any) error {
-	return c.ShouldBindBodyWith(obj, binding.YAML)
 }
 
 // ShouldBindBodyWithTOML is a shortcut for c.ShouldBindBodyWith(obj, binding.TOML).
@@ -1185,11 +1168,6 @@ func (c *Context) XML(code int, obj any) {
 	c.Render(code, render.XML{Data: obj})
 }
 
-// YAML serializes the given struct as YAML into the response body.
-func (c *Context) YAML(code int, obj any) {
-	c.Render(code, render.YAML{Data: obj})
-}
-
 // TOML serializes the given struct as TOML into the response body.
 func (c *Context) TOML(code int, obj any) {
 	c.Render(code, render.TOML{Data: obj})
@@ -1298,7 +1276,6 @@ type Negotiate struct {
 	HTMLData any
 	JSONData any
 	XMLData  any
-	YAMLData any
 	Data     any
 	TOMLData any
 }
@@ -1317,10 +1294,6 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 	case binding.MIMEXML:
 		data := chooseData(config.XMLData, config.Data)
 		c.XML(code, data)
-
-	case binding.MIMEYAML, binding.MIMEYAML2:
-		data := chooseData(config.YAMLData, config.Data)
-		c.YAML(code, data)
 
 	case binding.MIMETOML:
 		data := chooseData(config.TOMLData, config.Data)

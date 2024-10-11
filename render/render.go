@@ -26,7 +26,6 @@ var (
 	_ Render     = (*HTML)(nil)
 	_ HTMLRender = (*HTMLDebug)(nil)
 	_ HTMLRender = (*HTMLProduction)(nil)
-	_ Render     = (*YAML)(nil)
 	_ Render     = (*Reader)(nil)
 	_ Render     = (*AsciiJSON)(nil)
 	_ Render     = (*TOML)(nil)

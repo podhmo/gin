@@ -19,8 +19,6 @@ const (
 	MIMEMultipartPOSTForm = "multipart/form-data"
 	MIMEMSGPACK           = "application/x-msgpack"
 	MIMEMSGPACK2          = "application/msgpack"
-	MIMEYAML              = "application/x-yaml"
-	MIMEYAML2             = "application/yaml"
 	MIMETOML              = "application/toml"
 )
 
@@ -79,7 +77,6 @@ var (
 	FormPost      Binding     = formPostBinding{}
 	FormMultipart Binding     = formMultipartBinding{}
 	MsgPack       BindingBody = msgpackBinding{}
-	YAML          BindingBody = yamlBinding{}
 	Uri           BindingUri  = uriBinding{}
 	Header        Binding     = headerBinding{}
 	Plain         BindingBody = plainBinding{}
@@ -100,8 +97,6 @@ func Default(method, contentType string) Binding {
 		return XML
 	case MIMEMSGPACK, MIMEMSGPACK2:
 		return MsgPack
-	case MIMEYAML, MIMEYAML2:
-		return YAML
 	case MIMETOML:
 		return TOML
 	case MIMEMultipartPOSTForm:
